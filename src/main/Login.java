@@ -17,6 +17,8 @@ import java.awt.event.MouseListener;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
 
@@ -27,8 +29,8 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 	private JPasswordField txtPassword;
 	JButton btnRecupera,btnIngresar;
 	Style s = new Style();
-	JRadioButton rbtnView;
-
+	JLabel lblLook;
+	MainMenu mm = new MainMenu();
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 259, 300);
@@ -44,11 +46,12 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		mainPanel.setBackground(Color.WHITE);
 		JLabel lblIniciarSesin = new JLabel("Iniciar Sesi\u00F3n");
 		lblIniciarSesin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblIniciarSesin.setFont(new Font("Segoe UI Semibold", Font.BOLD, 14));
+		lblIniciarSesin.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 15));
 		lblIniciarSesin.setBounds(10, 11, 224, 20);
 		mainPanel.add(lblIniciarSesin);
 		
 		txtCorreo = new JTextField();
+		txtCorreo.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
 		txtCorreo.setBounds(10, 42, 224, 46);
 		mainPanel.add(txtCorreo);
 		txtCorreo.setColumns(10);
@@ -56,10 +59,10 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		TextPrompt tpCorreo = new TextPrompt("Correo Electrónico",txtCorreo);
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setHorizontalAlignment(SwingConstants.CENTER);
-		txtPassword.setBounds(10, 99, 224, 46);
+		txtPassword.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 13));
+		txtPassword.setBounds(10, 99, 195, 46);
 		mainPanel.add(txtPassword);
-		tpCorreo.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		tpCorreo.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 15));
 		tpCorreo.setForeground(Color.gray);
 		TextPrompt tpPass = new TextPrompt("Contraseña", txtPassword);
 		
@@ -67,7 +70,7 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		btnRecupera.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		btnRecupera.setBounds(10, 182, 224, 23);
 		mainPanel.add(btnRecupera);
-		tpPass.setFont(new Font("Tahoma", Font.PLAIN, 15));
+		tpPass.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 15));
 		tpPass.setForeground(Color.gray);
 		
 		
@@ -76,51 +79,63 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		btnRecupera.setBackground(null);
 		btnRecupera.setBorder(null);
 		
-		rbtnView = new JRadioButton("Ver contrase\u00F1a");
-		rbtnView.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		rbtnView.setBounds(10, 152, 109, 23);
-		mainPanel.add(rbtnView);
-		rbtnView.setOpaque(true);
-		rbtnView.setBackground(null);
-		
 		btnIngresar = new JButton("Ingresar");
+		btnIngresar.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 12));
 		btnIngresar.setBounds(10, 216, 224, 35);
 		mainPanel.add(btnIngresar);
-		tpPass.setHorizontalAlignment(JLabel.CENTER);
-		tpCorreo.setHorizontalAlignment(JLabel.CENTER);
 		btnRecupera.addMouseListener(this);
-		
+		btnIngresar.addMouseListener(this);
+		btnIngresar.addActionListener(this);
 		s.mdButton(btnIngresar, Color.decode("#0091EA"));
+		
+		lblLook = new JLabel();
+		lblLook.setBounds(204, 99, 30, 46);
+		mainPanel.add(lblLook);
+		lblLook.setIcon(new ImageIcon("views/eye24.png"));
+		txtPassword.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0,Color.gray));
+		lblLook.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, Color.gray));
+		lblLook.addMouseListener(this);
+		mm.btnBack.addActionListener(this);
 	}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		if(e.getSource() == btnRecupera) {
+		if(e.getSource() == btnIngresar) {
+			s.btnPointer(btnIngresar);
+			s.btnHover(btnIngresar,Color.decode("#0091EA"),Color.white, Color.decode("#0091EA"));
+		}else if(e.getSource() == btnRecupera) {
 			s.btnPointer(btnRecupera);
 		}
 	}
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseExited(MouseEvent e) {
+		if(e.getSource()==btnIngresar) {
+			s.mdButton(btnIngresar, Color.decode("#0091EA"));
+		}
 	}
 	@Override
-	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mousePressed(MouseEvent e) {
+		if(e.getSource()==lblLook) {
+			txtPassword.setEchoChar((char)0);
+		}		
 	}
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void mouseReleased(MouseEvent e) {
+		if(e.getSource() == lblLook) {
+			txtPassword.setEchoChar(('•'));
+		}
 	}
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnIngresar) {
+			this.setVisible(false);
+			mm.setVisible(true);
+		}else if(e.getSource() == mm.btnBack) {
+			this.setVisible(true);
+			mm.setVisible(false);
+		}
 	}
 }
