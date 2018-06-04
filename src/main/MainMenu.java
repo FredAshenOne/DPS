@@ -16,13 +16,15 @@ import javax.swing.JButton;
 
 public class MainMenu extends JFrame implements ActionListener,MouseListener{
 
+
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	JLabel lblIconDPs,lblIconEmployees,lblTitle;
 	Style s = new Style();
 	JPanel pnDPs,pnEmployees,pnEditPuesto;
 	EmployeesMenu em = new EmployeesMenu();
 	JButton btnDPs,btnEmployees,btn,btnBack;
-
+	MenuPuestos mp = new MenuPuestos();
 	public MainMenu() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 236, 300);
@@ -40,7 +42,7 @@ public class MainMenu extends JFrame implements ActionListener,MouseListener{
 		s.mdPanel(mainPanel);
 		
 		lblTitle = new JLabel("");
-		lblTitle.setFont(new Font("Comic Sans MS", Font.PLAIN, 14));
+		lblTitle.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 14));
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setBounds(42, 11, 167, 34);
 		mainPanel.add(lblTitle);
@@ -122,6 +124,8 @@ public class MainMenu extends JFrame implements ActionListener,MouseListener{
 		btnDPs.addMouseListener(this);
 		btnEmployees.addMouseListener(this);
 		em.btnBack.addActionListener(this);
+		mp.btnBack.addActionListener(this);
+		
 	}
 
 	@Override
@@ -132,6 +136,12 @@ public class MainMenu extends JFrame implements ActionListener,MouseListener{
 		}else if(e.getSource() == em.btnBack) {
 			this.setVisible(true);
 			em.setVisible(false);
+		}else if(e.getSource() == btnDPs) {
+			this.setVisible(false);
+			mp.setVisible(true);
+		}else if(e.getSource() == mp.btnBack) {
+			this.setVisible(true);
+			mp.setVisible(false);
 		}
 	}
 

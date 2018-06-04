@@ -1,9 +1,7 @@
 package main;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
 
+import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -13,23 +11,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JRadioButton;
 
 public class Login extends JFrame implements ActionListener,MouseListener{
 
+	
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtCorreo;
 	private JPasswordField txtPassword;
 	JButton btnRecupera,btnIngresar;
 	Style s = new Style();
-	JLabel lblLook;
+	ResultSet res;
+	String contraseña;
+	Conexion c = new Conexion();
+	JLabel lblLook,lblWarning;
 	MainMenu mm = new MainMenu();
 	public Login() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,7 +60,7 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		txtCorreo.setBounds(10, 42, 224, 46);
 		mainPanel.add(txtCorreo);
 		txtCorreo.setColumns(10);
-		
+		txtCorreo.setBorder(BorderFactory.createCompoundBorder(txtCorreo.getBorder(),BorderFactory.createEmptyBorder(5,5,5,5)));
 		TextPrompt tpCorreo = new TextPrompt("Correo Electrónico",txtCorreo);
 		
 		txtPassword = new JPasswordField();
@@ -65,6 +70,8 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		tpCorreo.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 15));
 		tpCorreo.setForeground(Color.gray);
 		TextPrompt tpPass = new TextPrompt("Contraseña", txtPassword);
+		txtPassword.setBorder(BorderFactory.createCompoundBorder(txtPassword.getBorder(),BorderFactory.createEmptyBorder(10,10,10,10)));
+		
 		
 		btnRecupera = new JButton("Recupera la contrase\u00F1a");
 		btnRecupera.setFont(new Font("Tahoma", Font.ITALIC, 11));
@@ -94,6 +101,13 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 		lblLook.setIcon(new ImageIcon("views/eye24.png"));
 		txtPassword.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0,Color.gray));
 		lblLook.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, Color.gray));
+		
+		lblWarning = new JLabel("");
+		lblWarning.setHorizontalAlignment(SwingConstants.CENTER);
+		lblWarning.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 11));
+		lblWarning.setBounds(10, 157, 224, 14);
+		mainPanel.add(lblWarning);
+		lblWarning.setForeground(Color.RED);
 		lblLook.addMouseListener(this);
 		mm.btnBack.addActionListener(this);
 	}
@@ -113,6 +127,7 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 		if(e.getSource()==btnIngresar) {
+			
 			s.mdButton(btnIngresar, Color.decode("#0091EA"));
 		}
 	}
@@ -131,11 +146,34 @@ public class Login extends JFrame implements ActionListener,MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnIngresar) {
-			this.setVisible(false);
-			mm.setVisible(true);
+			contraseña = new String(txtPassword.getPassword());
+			//if(isAnEmail(txtCorreo.getText())) {
+				res = c.query("Select * from empleados where Correo ='"+txtCorreo.getText()+"' and contraseña = '"+contraseña+"'");
+				try {
+					if(res.next()) {
+						lblWarning.setText("");
+						this.setVisible(false);
+						mm.lblTitle.setText("Bienvenido "+res.getString("nombre"));
+						mm.setVisible(true);
+					}else {
+						lblWarning.setText("Usuario o contraseña no validos");
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+					lblWarning.setText("No se pudo conectar");
+				}
+			//}else {
+				//lblWarning.setText("Correo no valido");
+			//}
 		}else if(e.getSource() == mm.btnBack) {
 			this.setVisible(true);
 			mm.setVisible(false);
 		}
+	}
+	
+	public boolean isAnEmail(String email) {
+		Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(email);
+		return m.find();
 	}
 }

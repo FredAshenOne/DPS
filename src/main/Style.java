@@ -1,15 +1,13 @@
 package main;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.LineBorder;
 
 public class Style {
@@ -19,6 +17,13 @@ public class Style {
 		new ImageIcon("views/cursor.png").getImage(),
 		new Point(0,0), "custom cursor"));
 	}
+	
+	public void lblPointer(JLabel lbl) {
+		lbl.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
+		new ImageIcon("views/cursor.png").getImage(),
+		new Point(0,0), "custom cursor"));
+	}
+	
 	public void panelPointer(JPanel p) {
 		p.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(
 		new ImageIcon("views/cursor.png").getImage(),
@@ -28,10 +33,14 @@ public class Style {
 	public void btnHover(JButton btn,Color cbord,Color cb,Color cf) {
 		btn.setBackground(Color.white);
 		btn.setContentAreaFilled(false);
-		btn.setBorder(new LineBorder(cbord,5,true));
+		btn.setBorder(new LineBorder(cbord,3,true));
 		btn.setOpaque(true);
 		btn.setBackground(cb);
 		btn.setForeground(cf);
+	}
+	public void mdRdbtn(JRadioButton rd) {
+		rd.setOpaque(true);
+		rd.setBackground(Color.WHITE);
 	}
 	
 	
@@ -54,13 +63,19 @@ public class Style {
 		btn.setIcon(new ImageIcon(url));
 		btn.setBackground(null);
 		btn.setBorder(null);
+		
 	}
+	
 	public void btnTransparent(JButton btn) {
 		btn.setOpaque(true);
 		btn.setBackground(null);
 		btn.setBorder(null);
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
+	}
+	
+	public void gBorders() {
+		
 	}
 		
 }

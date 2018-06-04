@@ -1,27 +1,29 @@
 package main;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.SwingConstants;
 import javax.swing.JButton;
 
 public class EmployeesMenu extends JFrame implements ActionListener,MouseListener{
 
+	
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	JPanel mainPanel,pnCreateEmployee,pnRemoveEmployee,pnConsultEmployee;
 	Style s = new Style();
 	JButton btnAdd,btnQuery,btnRemove,btnBack;
+	ImageIcon aicon = new ImageIcon("views/back.png");
+	AddEmployee ae = new AddEmployee();
+	QueryEmployee qe = new QueryEmployee();
 
 	public EmployeesMenu() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -118,17 +120,37 @@ public class EmployeesMenu extends JFrame implements ActionListener,MouseListene
 		btnQuery.addActionListener(this);
 		btnQuery.addMouseListener(this);
 		btnRemove.addMouseListener(this);
+		ae.btnBack.addActionListener(this);
+		qe.btnBack.addActionListener(this);
+		ae.btnInsert.addActionListener(this);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource() == btnAdd) {
+			ae.setVisible(true);
+			this.setVisible(false);
+		}else if(e.getSource() == ae.btnBack) {
+			this.setVisible(true);
+			ae.setVisible(false);
+		}else if(e.getSource() == btnQuery) {
+			qe.setVisible(true);
+			this.setVisible(false);
+		}else if(e.getSource() == qe.btnBack) {
+			this.setVisible(true);
+			qe.setVisible(false);
+		}else if(e.getSource() == ae.btnInsert) {
+			if(ae.insert) {
+				this.setVisible(true);
+				ae.setVisible(false);
+			}
+		}
 		
 	}
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -145,8 +167,7 @@ public class EmployeesMenu extends JFrame implements ActionListener,MouseListene
 			s.panelPointer(pnRemoveEmployee);
 		}else if(e.getSource() == btnBack) {
 			s.btnPointer(btnBack);
-		}
-		
+		}		
 	}
 
 	@Override
