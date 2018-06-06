@@ -41,10 +41,13 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 	JRadioButton rdComp1,rdComp2,rdComp3,rdComp4,rdComp5,rdComp6,rdComp7,rdComp8,rdComp9,rdComp10,
 	rdComp11,rdComp12,rdComp13,rdComp14,rdComp15,rdComp16,rdComp17,rdComp18,rdComp19,rdComp20,
 	rdComp21,rdComp22,rdComp23,rdComp24,rdComp25,rdComp26,rdComp27,rdComp28,rdComp29,rdComp30,rdComp31,rdComp32,rdComp33;
-	List<JRadioButton> listB = new ArrayList();
+	List<JRadioButton> listB = new ArrayList<JRadioButton>();
 	boolean arrow = true,puestocheck = false,insert = true;
 	String fecha;
 	String[] compArray;
+	Employees e = new Employees();
+	
+	
 	public AddEmployee() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(50, 50, 472, 439);
@@ -488,8 +491,7 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		tpPuesto.setForeground(Color.gray);
 		
 		btnInsert.addActionListener(this);
-		btnInsert.addMouseListener(this);
-		
+		btnInsert.addMouseListener(this);		
 		btnCompetencias.addActionListener(this);
 		btnCompetencias.addMouseListener(this);
 	}
@@ -546,14 +548,13 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		}else if(e.getSource() == btnInsert) {
 			if(!emptyFields()) {
 				if(!existingEmployee(txtName.getText(),txtApp.getText(),txtApm.getText())) {
-					insertEmployee(txtName.getText(),txtApp.getText(),txtApm.getText());
-					insert = true;
-					
-				}else{
-					insert = false; 
+					insertEmployee(txtName.getText(),txtApp.getText(),txtApm.getText());		
+					if(existingEmployee(txtName.getText(),txtApp.getText(),txtApm.getText())) {
+						insert = true;
+					}else{
+						insert = false;
+					}
 				}				
-			}else {
-				insert = false;
 			}
 			
 		}
@@ -615,18 +616,7 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		}
 	}
 	
-	public int getIdByName(String name,String App,String Apm) {
-		ResultSet rs;
-		
-		try {
-			rs = c.query("SELECT id FROM empleados where nombre ='"+name+"' AND apellido_Paterno = '"+App+"' AND apellido_Materno = '"+Apm+"'");
-			rs.next();
-			id = rs.getInt("id");
-		}catch(Exception ex) {
-			ex.printStackTrace();
-		}
-		return id;
-	}
+	
 	
 	public boolean existingEmployee(String name,String App,String Apm) {
 		ResultSet rs;
@@ -701,8 +691,8 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 						+ ",FechaInicio,Correo,Contraseña) VALUES ("+puestoId+","+Integer.parseInt(txtAge.getText())+
 						","+Integer.parseInt(txtHeight.getText())+","+Integer.parseInt(txtWeight.getText())+
 								","+depId+",'"+name+"','"+app+"','"+apm+"','"+fecha+"','"+txtCorreo.getText()+"','"+txtPass1.getText()+"');");
-				System.out.println(getCompetencias()[0]+" "+getIdByName(name,app,apm));
-				insertCompetencias(getCompetencias(),getIdByName(name,app,apm));
+				System.out.println(getCompetencias()[0]+" "+e.getIdByName(name,app,apm));
+				insertCompetencias(getCompetencias(),e.getIdByName(name,app,apm));
 				lblWarning.setText("");
 			}
 
@@ -737,6 +727,20 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		}
 		return true;
 	}
+	
+	public void clearFields() {
+		txtName.setText("");txtApp.setText("");txtApm.setText("");txtAge.setText("");txtWeight.setText("");txtHeight.setText("");
+		txtDep.setText("");txtDia.setText("");txtMes.setText("");txtAno.setText("");txtCorreo.setText("");txtPass1.setText("");
+		txtPass2.setText("");txtPuesto.setText("");
+		Iterator<JRadioButton> iter = listB.iterator();
+		while(iter.hasNext()) {
+			JRadioButton btn = iter.next();
+			btn.setSelected(false);
+		}
+		lblWarning.setText("");lblCheck.setText("");lblCheckMail.setText("");
+		
+	}
+	
 	
 	public boolean passMatch() {
 		if(txtPass1.getText().equals(txtPass2.getText())){

@@ -140,9 +140,15 @@ public class EmployeesMenu extends JFrame implements ActionListener,MouseListene
 			this.setVisible(true);
 			qe.setVisible(false);
 		}else if(e.getSource() == ae.btnInsert) {
-			if(ae.insert) {
-				this.setVisible(true);
-				ae.setVisible(false);
+			if(!ae.emptyFields()) {
+				if(!ae.existingEmployee(ae.txtName.getText(),ae.txtApp.getText(),ae.txtApm.getText())) {
+					ae.insertEmployee(ae.txtName.getText(),ae.txtApp.getText(),ae.txtApm.getText());		
+					if(ae.existingEmployee(ae.txtName.getText(),ae.txtApp.getText(),ae.txtApm.getText())) {
+						ae.clearFields();
+						this.setVisible(true);
+						ae.setVisible(false);						
+					}
+				}				
 			}
 		}
 		

@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -33,6 +34,7 @@ public class Style {
 	public void btnHover(JButton btn,Color cbord,Color cb,Color cf) {
 		btn.setBackground(Color.white);
 		btn.setContentAreaFilled(false);
+	
 		btn.setBorder(new LineBorder(cbord,3,true));
 		btn.setOpaque(true);
 		btn.setBackground(cb);
@@ -76,6 +78,12 @@ public class Style {
 	
 	public void gBorders() {
 		
+	}
+	
+	public void mdCombo(JComboBox cb) {
+		cb.setBackground(Color.WHITE);
+		cb.setOpaque(true);
+		cb.setBorder(null);
 	}
 		
 }
