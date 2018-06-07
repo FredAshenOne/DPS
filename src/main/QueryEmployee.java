@@ -176,6 +176,7 @@ public class QueryEmployee extends JFrame implements MouseListener,ActionListene
 				}
 				
 			}else {
+				lblWarning.setForeground(Color.red);
 				lblWarning.setText("Empleado No registrado");
 			}
 		}else if(e.getSource() == ee.btnBack) {

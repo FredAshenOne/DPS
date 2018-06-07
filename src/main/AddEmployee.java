@@ -30,13 +30,12 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	JTextField txtName,txtApp,txtApm,txtAge,txtWeight,txtHeight,txtDep,txtDia,txtMes,txtAno,
-	txtCorreo,txtPass1,txtPass2,txtPuesto;
+	JTextField txtName,txtApp,txtApm,txtAge,txtWeight,txtHeight,txtDep,txtCorreo,txtPass1,txtPass2,txtPuesto,txtFecha;
 	JButton btnBack,btnCompetencias,btnInsert;
 	Conexion c = new Conexion();
 	Style s = new Style();
 	int id =0,puestoId,depId;
-	JLabel lblPhoto,lblCompetencias,lblWarning,lblFecha,lblCheck,lblCheckMail;
+	JLabel lblPhoto,lblCompetencias,lblWarning,lblFecha,lblCheck,lblCheckMail,lblWarFecha;
 	JPanel pnCompentencias;
 	JRadioButton rdComp1,rdComp2,rdComp3,rdComp4,rdComp5,rdComp6,rdComp7,rdComp8,rdComp9,rdComp10,
 	rdComp11,rdComp12,rdComp13,rdComp14,rdComp15,rdComp16,rdComp17,rdComp18,rdComp19,rdComp20,
@@ -46,6 +45,7 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 	String fecha;
 	String[] compArray;
 	Employees e = new Employees();
+	
 	
 	
 	public AddEmployee() {
@@ -404,28 +404,8 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		lblFecha.setBounds(308, 167, 62, 14);
 		mainPanel.add(lblFecha);
 		
-		txtDia = new JTextField();
-		txtDia.setBounds(271, 192, 36, 20);
-		mainPanel.add(txtDia);
-		txtDia.setColumns(10);
-		TextPrompt tpDia = new TextPrompt("DD",txtDia);
-		tpDia.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 13));
-		tpDia.setForeground(Color.gray);
 		
-		txtMes = new JTextField();
-		txtMes.setColumns(10);
-		txtMes.setBounds(313, 192, 36, 20);
-		mainPanel.add(txtMes);
-		TextPrompt tpMes = new TextPrompt("MM",txtMes);
-		tpMes.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 13));
-		tpMes.setForeground(Color.gray);
-		
-		txtAno = new JTextField();
-		txtAno.setColumns(10);
-		txtAno.setBounds(357, 192, 53, 20);
-		TextPrompt tpAno = new TextPrompt("AAAA",txtAno);
-		mainPanel.add(txtAno);
-		
+	
 		txtCorreo = new JTextField();
 		txtCorreo.setBounds(39, 192, 206, 20);
 		mainPanel.add(txtCorreo);
@@ -484,11 +464,27 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 		txtPuesto.setBounds(39, 167, 206, 20);
 		mainPanel.add(txtPuesto);
 		txtPuesto.setColumns(10);
-		tpAno.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 13));
-		tpAno.setForeground(Color.gray);
 		TextPrompt tpPuesto = new TextPrompt("Puesto",txtPuesto);
 		tpPuesto.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 13));
 		tpPuesto.setForeground(Color.gray);
+		
+		txtFecha = new JTextField();
+		txtFecha.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent a) {
+				isDate(txtFecha.getText());
+			}
+		});
+		txtFecha.setBounds(279, 191, 119, 23);
+		mainPanel.add(txtFecha);
+		txtFecha.setColumns(10);
+		TextPrompt tpFecha = new TextPrompt("AAAA-MM-DD",txtFecha);
+		
+		lblWarFecha = new JLabel("");
+		lblWarFecha.setBounds(44, 370, 140, 14);
+		mainPanel.add(lblWarFecha);
+		tpFecha.setFont(new Font("Yu Gothic UI Light", Font.ITALIC, 13));
+		tpFecha.setForeground(Color.gray);
 		
 		btnInsert.addActionListener(this);
 		btnInsert.addMouseListener(this);		
@@ -563,8 +559,7 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 	
 	public boolean emptyFields(){
 		if(txtName.getText().length()>0&&txtApp.getText().length()>0&&txtApm.getText().length()>0&&txtDep.getText().length()>0
-			&&txtDia.getText().length()>0&&txtMes.getText().length()>0&&txtAno.getText().length()>0&&txtCorreo.getText().length()>0
-			&&txtPass1.getText().length()>0&&txtPass2.getText().length()>0) {
+			&&txtCorreo.getText().length()>0&&txtPass1.getText().length()>0&&txtPass2.getText().length()>0) {
 			if(getCompetencias().length>0) {
 				return false;
 			}else {
@@ -679,25 +674,22 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 	}
 	
 	public void insertEmployee(String name,String app, String apm) {
-
-		if(isDate(txtDia.getText(),txtMes.getText(),txtAno.getText())) {
-			fecha = txtAno.getText()+txtMes.getText()+txtDia.getText();
-		}else {
-			lblWarning.setText("La fecha no es valida");
-		}
-		try {
-			if(!existingEmail(txtCorreo.getText())&&passMatch()&&puestoExists()&&depExists()) {
-				c.update("INSERT INTO empleados (id_Puesto,edad,altura,peso,id_Departamento,nombre,apellido_Paterno,apellido_Materno"
-						+ ",FechaInicio,Correo,Contraseña) VALUES ("+puestoId+","+Integer.parseInt(txtAge.getText())+
-						","+Integer.parseInt(txtHeight.getText())+","+Integer.parseInt(txtWeight.getText())+
-								","+depId+",'"+name+"','"+app+"','"+apm+"','"+fecha+"','"+txtCorreo.getText()+"','"+txtPass1.getText()+"');");
-				System.out.println(getCompetencias()[0]+" "+e.getIdByName(name,app,apm));
-				insertCompetencias(getCompetencias(),e.getIdByName(name,app,apm));
-				lblWarning.setText("");
-			}
-
-		} catch (Exception e) {
-			
+		if(isDate(txtFecha.getText())) {
+			String fecha = txtFecha.getText().replace("/", "-");
+			try {
+				if(!existingEmail(txtCorreo.getText())&&passMatch()&&puestoExists()&&depExists()) {
+					c.update("INSERT INTO empleados (id_Puesto,edad,altura,peso,id_Departamento,nombre,apellido_Paterno,apellido_Materno"
+							+ ",FechaInicio,Correo,Contraseña) VALUES ("+puestoId+","+Integer.parseInt(txtAge.getText())+
+							","+Integer.parseInt(txtHeight.getText())+","+Integer.parseInt(txtWeight.getText())+
+									","+depId+",'"+name+"','"+app+"','"+apm+"','"+fecha+"','"+txtCorreo.getText()+"','"+txtPass1.getText()+"');");
+					System.out.println(getCompetencias()[0]+" "+e.getIdByName(name,app,apm));
+					insertCompetencias(getCompetencias(),e.getIdByName(name,app,apm));
+					lblWarning.setText("");
+				}
+	
+			} catch (Exception e) {
+				
+				}
 		}
 	}
 	
@@ -730,8 +722,7 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 	
 	public void clearFields() {
 		txtName.setText("");txtApp.setText("");txtApm.setText("");txtAge.setText("");txtWeight.setText("");txtHeight.setText("");
-		txtDep.setText("");txtDia.setText("");txtMes.setText("");txtAno.setText("");txtCorreo.setText("");txtPass1.setText("");
-		txtPass2.setText("");txtPuesto.setText("");
+		txtDep.setText("");txtCorreo.setText("");txtPass1.setText("");txtPass2.setText("");txtPuesto.setText("");txtFecha.setText("");
 		Iterator<JRadioButton> iter = listB.iterator();
 		while(iter.hasNext()) {
 			JRadioButton btn = iter.next();
@@ -752,5 +743,39 @@ public class AddEmployee extends JFrame implements ActionListener,MouseListener{
 			lblCheck.setText("Las contraseñas no coinciden");
 			return false;
 		}
+	}
+	
+	public boolean isDate(String date) {
+		String sepDate = date;
+		String[] fecha = date.split("/");
+		if(fecha.length == 3) {
+			int año = Integer.parseInt(fecha[0]);
+			int mes = Integer.parseInt(fecha[1]);
+			int dia = Integer.parseInt(fecha[2]);
+			if((año<2018 && año>1)&&(mes<13&&mes>0)&&(dia>0&&dia<31)) {
+			
+				Pattern p = Pattern.compile("[1-9][0-9][0-9][0-9][/][0-1][0-9][/][0-3][0-9]");
+				Matcher m = p.matcher(date);
+				if(m.matches()) {
+					lblWarFecha.setForeground(Color.green);
+					lblWarFecha.setText("Fecha Valida");
+					return true;
+				}else {
+					lblWarFecha.setForeground(Color.red);
+					lblWarFecha.setText("Fecha no valida");
+					return false;
+				}
+			}
+			else {
+				lblWarFecha.setForeground(Color.red);
+				lblWarFecha.setText("Fecha no valida");
+				return false;
+			}
+		}else {
+			lblWarFecha.setForeground(Color.red);
+			lblWarFecha.setText("Fecha no valida");
+			return false;
+		}
+			
 	}
 }
